@@ -1,9 +1,9 @@
-/*#include <unistd.h> 
+#include <unistd.h> 
 #include <stdlib.h>
 #include <stdbool.h>
 #include <fcntl.h>
-#include <malloc/malloc.h>*/
-#include <malloc.h>
+#include <malloc/malloc.h>
+//#include <malloc.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -127,10 +127,7 @@ int main() {
     for (int i = 0; i < n; i++) {
         res[i] = (int *)malloc(n*sizeof(int));
     }
-    int **res2 = (int **)malloc(n*sizeof(int *));
-    for (int i = 0; i < n; i++) {
-        res2[i] = (int *)malloc(n*sizeof(int));
-    }
+    
     int **start_arr = (int **)malloc(n*sizeof(int *));
     for (int i = 0; i < n; i++) {
         start_arr[i] = (int *)malloc(n*sizeof(int));
@@ -156,13 +153,13 @@ int main() {
         for (int j = 0; j < n; j++) {
             arr[i][j] = 0;
             res[i][j] = 0;
-            res2[i][j] = 0;
             start_arr[i][j] = 0;
         }
     }
     char *buff1;
     char *buff2;
     int num = 0;
+    int num_3d = 0;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             num = -1;
@@ -192,8 +189,27 @@ int main() {
                 node_lists = node_lists->next;
             }
             node_lists = head_node;
+            if (num > 0) {
+                num_3d++;
+            }
             arr[i][j] = num;
             start_arr[i][j] = num;
+        }
+    }
+    int ***res2 = (int ***)malloc(n*sizeof(int **));
+    for (int i = 0; i < n; i++) {
+        res2[i] = (int **)malloc(n*sizeof(int*));
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            res2[i][j] = (int *)malloc(num_3d*sizeof(int));
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            for (int l = 0; l < num_3d; l++) {
+                res2[i][j][l] = 0;
+            }
         }
     }
     for (int i = 0; i < n; i++) {
@@ -211,8 +227,10 @@ int main() {
     printf("%s\n", "========================================");
     int g = 0;
     int h = 0;
-    for (int k = 0; k < 2; k++) {
+    int l = 0;
+    for (int k = 0; k < n; k++) {
         for (int i = 0; i < n; i++) {
+            l = 0;
             for (int j = 0; j < n; j++) {
                 /*if (arr[i][j] > 0) {
                     continue;
@@ -226,10 +244,9 @@ int main() {
                         if (g > h) {
                             g = arr[i][k] + arr[k][j];
                             if (arr[i][j] == g) {
-                                arr[i][j] = g;
-                                arr[j][i] = g;
-                                res2[i][j] = k;
-                                res2[j][i] = k;
+                                res2[i][j][l] = k;
+                                res2[j][i][l] = k;
+                                l++;
                                 continue;
                             }
                             arr[i][j] = g;
@@ -245,74 +262,20 @@ int main() {
                     }
                     else {
                         if (arr[i][j] > arr[i][k] + arr[k][j]) {
+                            arr[i][j] = arr[i][k] + arr[k][j];
+                            arr[j][i] = arr[i][k] + arr[k][j];
+                            res[i][j] = k;
+                            res[j][i] = k;
+                        }
+                        else {
                             if (arr[i][k] + arr[k][j] == arr[i][j]) {
-                                arr[i][j] = arr[i][k] + arr[k][j];
-                                arr[j][i] = arr[i][k] + arr[k][j];
-                                res2[i][j] = k;
-                                res2[j][i] = k;
+                                res2[i][j][l] = k;
+                                res2[j][i][l] = k;
+                                l++;
                                 continue;
                             }
-                            arr[i][j] = arr[i][k] + arr[k][j];
-                            arr[j][i] = arr[i][k] + arr[k][j];
-                            res[i][j] = k;
-                            res[j][i] = k;
                         }
                     }
-                    
-                }
-            }
-        }
-    }
-    for (int k = 2; k < n; k++) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                /*if (arr[i][j] > 0) {
-                    continue;
-                }*/
-                if (i == j) {
-                    continue;
-                }
-                if(i != j && arr[i][k] != -1 && arr[k][j] != -1) {
-                    if (arr[i][j] == -1) {
-                        h = arr[i][k] + arr[k][j];
-                        if (g > h) {
-                            g = arr[i][k] + arr[k][j];
-                            if (arr[i][j] == g) {
-                                arr[i][j] = g;
-                                arr[j][i] = g;
-                                res2[i][j] = k;
-                                res2[j][i] = k;
-                                continue;
-                            }
-                            arr[i][j] = g;
-                            arr[j][i] = g;
-                            res[i][j] = k;
-                            res[j][i] = k;
-                            continue;
-                        }
-                        else {
-                            g = arr[i][k] + arr[k][j];
-                            continue;
-                        }
-                    }
-                    else {
-                        if (arr[i][j] > arr[i][k] + arr[k][j]) {
-                            arr[i][j] = arr[i][k] + arr[k][j];
-                            arr[j][i] = arr[i][k] + arr[k][j];
-                            res[i][j] = k;
-                            res[j][i] = k;
-                        }
-                        else {
-                            if (arr[i][j] == arr[i][k] + arr[k][j] && arr[i][k] != 0 && arr[k][j] != 0) {
-                                arr[i][j] = arr[i][k] + arr[k][j];
-                                arr[j][i] = arr[i][k] + arr[k][j];
-                                res2[i][j] = k;
-                                res2[j][i] = k;
-                            }
-                            
-                        }
-                    }
-                    
                 }
             }
         }
@@ -342,16 +305,14 @@ int main() {
         }
         printf("%s\n", "|");
     }
+    printf("%s\n", "========================================");
     printf("%s\n", "|");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (arr[i][j] >= 10) {
-                printf("%d ", res2[i][j]);
+    for (int l = 0; l < num_3d; l++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                printf("%d ", res2[i][j][l]);
             }
-            else {
-                printf("%d ", res2[i][j]);
-            }
-            
+            printf("%s\n", "|");
         }
         printf("%s\n", "|");
     }
