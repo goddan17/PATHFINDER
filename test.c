@@ -1,9 +1,9 @@
-#include <unistd.h> 
+/*#include <unistd.h> 
 #include <stdlib.h>
 #include <stdbool.h>
 #include <fcntl.h>
-#include <malloc/malloc.h>
-//#include <malloc.h>
+#include <malloc/malloc.h>*/
+#include <malloc.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -230,7 +230,7 @@ int main() {
     int l = 0;
     for (int k = 0; k < n; k++) {
         for (int i = 0; i < n; i++) {
-            l = 0;
+             
             for (int j = 0; j < n; j++) {
                 /*if (arr[i][j] > 0) {
                     continue;
@@ -243,12 +243,12 @@ int main() {
                         h = arr[i][k] + arr[k][j];
                         if (g > h) {
                             g = arr[i][k] + arr[k][j];
-                            if (arr[i][j] == g) {
+                            /*if (arr[i][j] == g) {
                                 res2[i][j][l] = k;
                                 res2[j][i][l] = k;
                                 l++;
                                 continue;
-                            }
+                            }*/
                             arr[i][j] = g;
                             arr[j][i] = g;
                             res[i][j] = k;
