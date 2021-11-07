@@ -1,9 +1,9 @@
-/*#include <unistd.h> 
+#include <unistd.h> 
 #include <stdlib.h>
 #include <stdbool.h>
 #include <fcntl.h>
-#include <malloc/malloc.h>*/
-#include <malloc.h>
+#include <malloc/malloc.h>
+//#include <malloc.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -212,6 +212,10 @@ int main() {
             }
         }
     }
+    int *arr_duplicate = (int *)malloc(num_3d*sizeof(int));
+    for (int i = 0; i < num_3d; i++) {
+        arr_duplicate[i] = 0;
+    }
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             if (arr[i][j] >= 10) {
@@ -374,6 +378,19 @@ int main() {
                         arr_dist_way[i][j] = 0;
                     }
                 }
+                for (int i = 0; i < num_3d; i++) {
+                    arr_duplicate[i] = 0;
+                }
+                int i2 = 0;
+                for (int i = 0; i < num_3d; i++) {
+                    if (res2[index_is-1][index_is2-1][i] == 0) {
+                        continue;
+                    }
+                    else {
+                        arr_duplicate[i2] = res2[index_is-1][index_is2-1][i];
+                        i2++;
+                    }
+                }
                 arr_way = recurs(index_is, index_is3, start_arr, res, arr_way, l);
                 int c = 0;
                 for (int i = 0; i < n/2; i++) {
@@ -402,6 +419,10 @@ int main() {
                 printf("%s\n", "========================================");
                 for (int i = 0; i < n; i++) {
                     printf("%d ", arr_way[i]);
+                }
+                printf("%s\n", "|");
+                for (int i = 0; i < num_3d; i++) {
+                    printf("%d ", arr_duplicate[i]);
                 }
                 printf("%s\n", "|");
                 printf("Path: %s -> %s\n", buff_island, buff_island2);
