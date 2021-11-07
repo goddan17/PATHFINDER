@@ -83,7 +83,7 @@ n_list *Remove_all_node_list(n_list *head) {
 int *recurs(int index_is, int index_is3, int **start_arr, int **res, int *arr_way, int i) {
     arr_way[i] = index_is3;
     if (start_arr[index_is - 1][index_is3] == -1) {
-        index_is3 = res[index_is-1][index_is3];
+        index_is3 = res[index_is - 1][index_is3];
         i++;
         recurs(index_is, index_is3, start_arr, res, arr_way, i);
     }
@@ -127,7 +127,10 @@ int main() {
     for (int i = 0; i < n; i++) {
         res[i] = (int *)malloc(n*sizeof(int));
     }
-    
+    int **res_duplicate = (int **)malloc(n*sizeof(int *));
+    for (int i = 0; i < n; i++) {
+        res_duplicate[i] = (int *)malloc(n*sizeof(int));
+    }
     int **start_arr = (int **)malloc(n*sizeof(int *));
     for (int i = 0; i < n; i++) {
         start_arr[i] = (int *)malloc(n*sizeof(int));
@@ -153,6 +156,7 @@ int main() {
         for (int j = 0; j < n; j++) {
             arr[i][j] = 0;
             res[i][j] = 0;
+            res_duplicate[i][j] = 0;
             start_arr[i][j] = 0;
         }
     }
@@ -234,7 +238,6 @@ int main() {
     int l = 0;
     for (int k = 0; k < n; k++) {
         for (int i = 0; i < n; i++) {
-             
             for (int j = 0; j < n; j++) {
                 /*if (arr[i][j] > 0) {
                     continue;
@@ -391,6 +394,15 @@ int main() {
                         i2++;
                     }
                 }
+                int num_buff = 0;
+                for (int i = 0; i < num_3d; i++) {
+                    num_buff = arr_duplicate[i];
+                    for (int j = 0; j < i; j++) {
+                        if (num_buff == arr_duplicate[j]) {
+                            arr_duplicate[j] = 0;
+                        }
+                    }
+                }
                 arr_way = recurs(index_is, index_is3, start_arr, res, arr_way, l);
                 int c = 0;
                 for (int i = 0; i < n/2; i++) {
@@ -503,6 +515,76 @@ int main() {
                 
                 printf("= %d", arr[index_is - 1][index_is2 - 1]);
                 printf("\n%s\n", "========================================");
+                if (arr_duplicate[0] != 0) {
+                    for (int i = 0; i < num_3d; i++) {
+                        if (arr_duplicate[i] == 0) {
+                            break;
+                        }
+                        for (int i2 = 0; i2 < n; i2++) {
+                            arr_way_2[i2] = 0;
+                        }
+                        for (int j = 0; j < n; j++) {
+                            arr_way[j] = 0;
+                        }
+                        l = 0;
+                        int num_buff1 = arr_duplicate[i];
+                        int index_duplicate = 1;
+                        for (int k = 0; k < n; k++) {
+                            for (int kk = 0; kk < n; kk++) {
+                                res_duplicate[k][kk] = 0;
+                            }
+                        }
+                        for (int j = 0; j < num_3d; j++) {
+                            if (num_buff1 == res2[index_is - 1][index_is2 - 1][j]) {
+                                for (int k = 0; k < n; k++) {
+                                    for (int kk = 0; kk < n; kk++) {
+                                        res_duplicate[k][kk] = res2[k][kk][j];
+                                    }
+                                }
+                                break;
+                            }
+                            index_duplicate++;
+                        }
+                        index_is3 = res_duplicate[index_is-1][index_is2-1];
+                        arr_way = recurs(index_is, index_is3, start_arr, res_duplicate, arr_way, l);
+                        int c = 0;
+                        for (int i = 0; i < n/2; i++) {
+                            c = arr_way[i];
+                            arr_way[i] = arr_way[n - 1 - i];
+                            arr_way[n - 1 - i] = c;
+                        }
+                        int bufff = 0;
+                        for (int i = 0; i < n; i++) {
+                            bufff = arr_way[i];
+                            arr_way_2[i] = bufff;
+                        }
+                        for (int i = 0; i < n; i++) {
+                            arr_way[i] = 0;
+                        }
+                        bufff = 0;
+                        int inum = 0;
+                        for (int i = 0; i < n; i++) {
+                            if (arr_way_2[i] == 0) {
+                                continue;
+                            }
+                            bufff = arr_way_2[i];
+                            arr_way[inum] = bufff;
+                            inum++;
+                        }
+                        for (int j = 0; j < n; j++) {
+                            printf("%d |", arr_way[j]);
+                        }
+                        printf("%s\n", "|");
+                        for (int mm = 0; mm < n; mm++) {
+                            for (int nn = 0; nn < n; nn++) {
+                                printf("%d ", res_duplicate[mm][nn]);
+                            }
+                            printf("%s\n", "|");
+                        }
+                        printf("\nres2 index = %d\n", index_duplicate);
+                    }
+                    printf("\n%s\n", "===");
+                }
             }
             else {
                 continue;
