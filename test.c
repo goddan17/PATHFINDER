@@ -317,6 +317,15 @@ int main() {
     for (int l = 0; l < num_3d; l++) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
+                if (res2[i][j][l] == 0) {
+                    res2[i][j][l] = res[i][j];
+                }
+            }
+        }
+    }
+    for (int l = 0; l < num_3d; l++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 printf("%d ", res2[i][j][l]);
             }
             printf("%s\n", "|");
@@ -515,11 +524,40 @@ int main() {
                 
                 printf("= %d", arr[index_is - 1][index_is2 - 1]);
                 printf("\n%s\n", "========================================");
-                if (arr_duplicate[0] != 0) {
+                int i3 = 0;
+                int k_ind = 0;
+                for (int i = 0; i < num_3d; i++) {
+                    if (arr_duplicate[i] == 0) {
+                        if (k_ind > 0) {
+                            break;
+                        }
+                        continue;
+                    }
+                    if (arr_duplicate[i] > 0) {
+                        k_ind++;
+                        arr_duplicate[i3] = arr_duplicate[i];
+                        i3++;
+                        arr_duplicate[i] = 0;
+                    }
+                }
+                for (int i = 0; i < num_3d; i++) {
+                    if (res[index_is - 1][index_is2 - 1] >= arr_duplicate[i]) {
+                        arr_duplicate[i] = 0;
+                    }
+                }
+                printf("%s\n", "|");
+                for (int i = 0; i < num_3d; i++) {
+                    printf("%d ", arr_duplicate[i]);
+                }
+                printf("%s\n", "|");
+                if (arr_duplicate[0] != 0 ) {
                     for (int i = 0; i < num_3d; i++) {
                         if (arr_duplicate[i] == 0) {
                             break;
                         }
+                        /*if (arr_duplicate[i] <= res[index_is - 1][index_is2 - 1]) {
+                            continue;
+                        }*/
                         for (int i2 = 0; i2 < n; i2++) {
                             arr_way_2[i2] = 0;
                         }
