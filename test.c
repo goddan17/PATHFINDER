@@ -90,6 +90,19 @@ int *recurs(int index_is, int index_is3, int **start_arr, int **res, int *arr_wa
     return arr_way;
 }
 
+int **duplicate_way(int index_is, int index_is3, int **start_arr, int **res, int *arr_way, int l, int **arr_way22d, int n, int num_3d) {
+    for (int i = 0; i < num_3d; i++) {
+        for (int j = 0; j < n; j++) {
+            arr_way[j] = 0;
+        }
+        arr_way = recurs(index_is, index_is3, start_arr, res, arr_way, l);
+        for (int j = 0; j < n; j++) {
+            arr_way22d[i][j] = arr_way[j];
+        }
+    }
+    return arr_way22d;
+}
+
 int main() {
     int n = 5;
     is_list *islands = Create_island_list("A", 1);
@@ -215,6 +228,21 @@ int main() {
                 res2[i][j][l] = 0;
             }
         }
+    }
+    int **arr_way2d = (int **)malloc(num_3d*sizeof(int *));
+    for (int i = 0; i < num_3d; i++) {
+        arr_way2d[i] = (int *)malloc(n*sizeof(int));
+    }
+    for (int i = 0; i < num_3d; i++) {
+        for (int j = 0; j < n; j++) {
+            arr_way2d[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < num_3d; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", arr_way2d[i][j]);
+        }
+        printf("%s\n", "|");
     }
     int *arr_duplicate = (int *)malloc(num_3d*sizeof(int));
     for (int i = 0; i < num_3d; i++) {
@@ -585,33 +613,36 @@ int main() {
                         }
                         index_is3 = res_duplicate[index_is-1][index_is2-1];
                         arr_way = recurs(index_is, index_is3, start_arr, res_duplicate, arr_way, l);
+                        
                         int c = 0;
-                        for (int i = 0; i < n/2; i++) {
-                            c = arr_way[i];
-                            arr_way[i] = arr_way[n - 1 - i];
-                            arr_way[n - 1 - i] = c;
+                        for (int v = 0; v < n/2; v++) {
+                            c = arr_way[v];
+                            arr_way[v] = arr_way[n - 1 - v];
+                            arr_way[n - 1 - v] = c;
                         }
                         int bufff = 0;
-                        for (int i = 0; i < n; i++) {
-                            bufff = arr_way[i];
-                            arr_way_2[i] = bufff;
+                        for (int v = 0; v < n; v++) {
+                            bufff = arr_way[v];
+                            arr_way_2[v] = bufff;
                         }
-                        for (int i = 0; i < n; i++) {
-                            arr_way[i] = 0;
+                        for (int v = 0; v < n; v++) {
+                            arr_way[v] = 0;
                         }
                         bufff = 0;
                         int inum = 0;
-                        for (int i = 0; i < n; i++) {
-                            if (arr_way_2[i] == 0) {
+                        for (int v = 0; v < n; v++) {
+                            if (arr_way_2[v] == 0) {
                                 continue;
                             }
-                            bufff = arr_way_2[i];
+                            bufff = arr_way_2[v];
                             arr_way[inum] = bufff;
                             inum++;
                         }
                         for (int j = 0; j < n; j++) {
                             printf("%d |", arr_way[j]);
                         }
+                        printf("%s\n", "|");
+                        
                         printf("%s\n", "|");
                         for (int mm = 0; mm < n; mm++) {
                             for (int nn = 0; nn < n; nn++) {
