@@ -90,17 +90,17 @@ int *recurs(int index_is, int index_is3, int **start_arr, int **res, int *arr_wa
     return arr_way;
 }
 
-int **duplicate_way(int index_is, int index_is3, int **start_arr, int **res, int *arr_way, int l, int **arr_way22d, int n, int num_3d) {
+int **duplicate_way(int index_is, int index_is3, int **start_arr, int **res, int *arr_way, int l, int **arr_ways, int n, int num_3d) {
     for (int i = 0; i < num_3d; i++) {
         for (int j = 0; j < n; j++) {
             arr_way[j] = 0;
         }
         arr_way = recurs(index_is, index_is3, start_arr, res, arr_way, l);
         for (int j = 0; j < n; j++) {
-            arr_way22d[i][j] = arr_way[j];
+            arr_ways[i][j] = arr_way[j];
         }
     }
-    return arr_way22d;
+    return arr_ways;
 }
 
 int main() {
@@ -213,6 +213,15 @@ int main() {
             start_arr[i][j] = num;
         }
     }
+    int **ways = (int **)malloc(num_3d*sizeof(int *));
+    for (int i = 0; i < num_3d; i++) {
+        ways[i] = (int *)malloc(n*sizeof(int));
+    }
+    for (int i = 0; i < num_3d; i++) {
+        for (int j = 0; j < n; j++) {
+            ways[i][j] = 0;
+        }
+    }
     int ***res2 = (int ***)malloc(n*sizeof(int **));
     for (int i = 0; i < n; i++) {
         res2[i] = (int **)malloc(n*sizeof(int*));
@@ -228,21 +237,6 @@ int main() {
                 res2[i][j][l] = 0;
             }
         }
-    }
-    int **arr_way2d = (int **)malloc(num_3d*sizeof(int *));
-    for (int i = 0; i < num_3d; i++) {
-        arr_way2d[i] = (int *)malloc(n*sizeof(int));
-    }
-    for (int i = 0; i < num_3d; i++) {
-        for (int j = 0; j < n; j++) {
-            arr_way2d[i][j] = 0;
-        }
-    }
-    for (int i = 0; i < num_3d; i++) {
-        for (int j = 0; j < n; j++) {
-            printf("%d ", arr_way2d[i][j]);
-        }
-        printf("%s\n", "|");
     }
     int *arr_duplicate = (int *)malloc(num_3d*sizeof(int));
     for (int i = 0; i < num_3d; i++) {
@@ -407,6 +401,11 @@ int main() {
             if (indicator == 0) {
                 index_is3 = res[index_is-1][index_is2-1];
                 int l = 0;
+                for (int i = 0; i < num_3d; i++) {
+                    for (int j = 0; j < n; j++) {
+                        ways[i][j] = 0;
+                    }
+                }
                 for (int i = 0; i < n; i++) {
                     arr_way_2[i] = 0;
                 }
@@ -578,6 +577,13 @@ int main() {
                     printf("%d ", arr_duplicate[i]);
                 }
                 printf("%s\n", "|");
+                for (int i = 0; i < num_3d; i++) {
+                    for (int j = 0; j < n; j++) {
+                        printf("%d ", ways[i][j]);
+                    }
+                    printf("%s\n", "|");
+                }
+                printf("%s\n", "|");
                 if (arr_duplicate[0] != 0 ) {
                     for (int i = 0; i < num_3d; i++) {
                         if (arr_duplicate[i] == 0) {
@@ -613,7 +619,8 @@ int main() {
                         }
                         index_is3 = res_duplicate[index_is-1][index_is2-1];
                         arr_way = recurs(index_is, index_is3, start_arr, res_duplicate, arr_way, l);
-                        
+                        l = 0;
+                        ways = duplicate_way(index_is, index_is3, start_arr, res_duplicate, arr_way, l, ways, n, num_3d);
                         int c = 0;
                         for (int v = 0; v < n/2; v++) {
                             c = arr_way[v];
