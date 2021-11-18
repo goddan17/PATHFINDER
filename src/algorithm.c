@@ -4,75 +4,143 @@ void algorithm(char* argv[]) {
     char buffer;
     int fl = open(argv[1], O_RDONLY);
     int size = read(fl, &buffer, 1);
-    int line_num = 0;
-    int amount_sym = 0;
-    int amount_bridges = 0;
+    int num_bridges = 0;
+    int ss_size = 0;
+    int kk_size = 0;
+    int gg_size = 0;
+    int line_num = 1;
+    fl = open(argv[1], O_RDONLY);
     while (size == read(fl, &buffer, 1)) {
-        if (line_num == 0) {
+        if (line_num == 1) {
             if (buffer == '\n') {
                 line_num++;
-            }
-        }
-        if (line_num > 0) {
-            if (buffer == '\n') {
                 continue;
             }
+        }
+        else if (line_num > 1) {
             if (buffer == '-') {
-                amount_bridges++;
+                num_bridges += 2;
             }
             if (mx_isdigit(buffer)) {
-                continue;
-            }
-            amount_sym++;
-        }
-    }
-    close(fl);
-    fl = open(argv[1], O_RDONLY);
-    char *isl = mx_strnew(amount_sym);
-    char *dist = mx_strnew(amount_bridges);
-    int i = 0;
-    int j = 0;
-    line_num = 0;
-    while (size == read(fl, &buffer, 1)) {
-        if (line_num == 0) {
-            if (buffer == '\n') {
-                line_num++;
-            }
-        }
-        if (line_num > 0) {
-            if (buffer == '\n') {
+                gg_size++;
                 continue;
             }
             if (buffer == ',') {
-                dist[i] = buffer;
-                i++;
+                gg_size++;
             }
-            if (mx_isdigit(buffer)) {
-                dist[i] = buffer;
+            ss_size++;
+            kk_size++;
+        }
+    }
+    close(fl);
+
+    fl = open(argv[1], O_RDONLY);
+    char *ss = mx_strnew(ss_size);
+    line_num = 1;
+    int i = 0;
+    while (size == read(fl, &buffer, 1)) {
+        if (line_num == 1) {
+            if (buffer == '\n') {
+                line_num++;
+                continue;
+            }
+        }
+        else if (line_num > 1) {
+            if (buffer == '\n') {
+                ss[i] = '-';
                 i++;
                 continue;
             }
-            isl[j] = buffer;
+            if (buffer == ',' || mx_isdigit(buffer)) {
+                continue;
+            }
+            ss[i] = buffer;
+            i++;
+        }
+    }
+    close(fl);
+
+    fl = open(argv[1], O_RDONLY);
+    char *kk = mx_strnew(kk_size);
+    line_num = 1;
+    int j = 0;
+    while (size == read(fl, &buffer, 1)) {
+        if (line_num == 1) {
+            if (buffer == '\n') {
+                line_num++;
+                continue;
+            }
+        }
+        else if (line_num > 1) {
+            if (buffer == '\n' || mx_isdigit(buffer)) {
+                continue;
+            }
+            kk[j] = buffer;
             j++;
         }
     }
-    //char **arr_bridges = mx_strsplit(isl, ',');
-    //char **arr_distance = mx_strsplit(dist, ',');
-    //mx_printerr(arr_bridges[1]);
-    //mx_printerr(arr_distance[1]);
-    n_list *tmp = (n_list*)malloc(sizeof(n_list));
-    tmp = create_node(0, "Greenlan0", "Fraser0", 666);
-    add_ellem_end(1, "Greenlan", "Fraser", 2, tmp);
-    add_ellem_end(2, "Greenlan1", "Fraser1", 21, tmp);
-    add_ellem_end(3, "Greenlan2", "Fraser2", 12, tmp);
-    add_ellem_end(4, "Greenlan3", "Fraser3", 23, tmp);
-    while (tmp != NULL) {
-        printf("\n%d\n", tmp->index);
-        printf("%s -", tmp->element.island1);
-        printf("%s, ", tmp->element.island2);
-        printf("%d", tmp->element.distance);
-        tmp = tmp -> next;
+    close(fl);
+
+    fl = open(argv[1], O_RDONLY);
+    char *gg = mx_strnew(gg_size);
+    line_num = 1;
+    int h = 0;
+    int nn_size = 0;
+    while (size == read(fl, &buffer, 1)) {
+        if (line_num == 1) {
+            if (buffer == '\n') {
+                line_num++;
+                continue;
+            }
+            nn_size++;
+        }
+        else if (line_num > 1) {
+            if (buffer == ',' || mx_isdigit(buffer)) {
+                gg[h] = buffer;
+                h++;
+                continue;
+            }
+        }
     }
     close(fl);
+    char **arr1_buff;
+    char **arr2_buff;
+    char **arr3_buff;
+    arr1_buff = mx_strsplit(ss, '-');
+    arr2_buff = mx_strsplit(ss, '-');
+    arr3_buff = mx_strsplit(gg, ',');
+    char *buff;
+    for (int i = 0; i < num_bridges; i++) {
+        buff = arr1_buff[i];
+        for (int j = i + 1; j < num_bridges; j++) {
+            if (mx_strcmp(buff, arr1_buff[j]) == 0) {
+                arr1_buff[j] = mx_strdup("\0");
+            }
+        }
+    }
+    fl = open(argv[1], O_RDONLY);
+    char *nn = mx_strnew(nn_size);
+    i = 0;
+    while (size == read(fl, &buffer, 1)) {
+        if (buffer == '\n') {
+            break;
+        }
+        nn[i] = buffer;
+    }
+    close(fl);
+    int n = mx_atoi(nn);
+    char **arr_island = (char**)malloc(sizeof(char*) * n);
+    for (int i = 0; i < n; i++) {
+        arr_island[i] = "\0";
+    }
+    j = 0;
+    for (int i = 0; i < num_bridges; i++) {
+        if (mx_strcmp(arr1_buff[i], "\0") == 0) {
+            continue;
+        }
+        arr_island[j] = arr1_buff[i];
+        j++;
+    }
+    pathfinder(arr_island, arr2_buff, arr3_buff, n, num_bridges);
 }
 

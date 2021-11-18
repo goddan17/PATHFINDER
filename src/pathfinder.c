@@ -1,85 +1,5 @@
-#include <unistd.h> 
-#include <stdlib.h>
-#include <stdbool.h>
-#include <fcntl.h>
-#include <malloc/malloc.h>
-//#include <malloc.h>
-#include <stdio.h>
-#include <string.h>
+#include "../inc/header.h"
 
-////////////////////////////////////////////////////////////////////////////////
-typedef struct island_list {
-    char *name_island;
-    int index;
-    struct island_list *next;
-}   is_list;
-////////////////////////////////////////////////////////////////////////////////
-is_list *Create_island_list(char *name_island, int index) {
-    is_list *tmp = (is_list*)malloc(sizeof(is_list));
-    tmp->name_island = name_island;
-    tmp->index = index;
-    tmp->next = NULL;
-    return(tmp);
-}
-
-void Add_elem_end_island_list(char *name_island, int index, is_list *head) {
-    is_list *tmp = (is_list*)malloc(sizeof(is_list));
-    tmp->name_island = name_island;
-    tmp->index = index;
-    tmp->next = NULL;
-    is_list *p = head;
-    
-    while (p->next != NULL)
-        p = p->next;
-    p->next = tmp;
-}
-
-is_list *Remove_all_island_list(is_list *head) {
-    while (head != NULL) {
-        is_list *p = head;
-        head = head->next;
-        free(p);
-    }
-    return NULL;
-}
-////////////////////////////////////////////////////////////////////////////////
-typedef struct node_list {
-    char *island1;
-    char *island2;
-    int distance;
-    struct node_list *next;
-}   n_list;
-////////////////////////////////////////////////////////////////////////////////
-n_list *Create_node_list(char *island1, char *island2, int distance) {
-    n_list *tmp = (n_list*)malloc(sizeof(n_list));
-    tmp->island1 = island1;
-    tmp->island2 = island2;
-    tmp->distance = distance;
-    tmp->next = NULL;
-    return(tmp);
-}
-
-void Add_elem_end_node_list(char *island1, char *island2, int distance, n_list *head) {
-    n_list *tmp = (n_list*)malloc(sizeof(n_list));
-    tmp->island1 = island1;
-    tmp->island2 = island2;
-    tmp->distance = distance;
-    tmp->next = NULL;
-    n_list *p = head;
-    while (p->next != NULL)
-        p = p->next;
-    p->next = tmp;
-}
-
-n_list *Remove_all_node_list(n_list *head) {
-    while (head != NULL) {
-        n_list *p = head;
-        head = head->next;
-        free(p);
-    }
-    return NULL;
-}
-////////////////////////////////////////////////////////////////////////////////
 int *recurs(int index_is, int index_is3, int **start_arr, int **res, int *arr_way, int i) {
     arr_way[i] = index_is3;
     if (start_arr[index_is - 1][index_is3] == -1) {
@@ -91,7 +11,6 @@ int *recurs(int index_is, int index_is3, int **start_arr, int **res, int *arr_wa
 }
 
 int **duplicate_way(int index_is, int index_is3, int **start_arr, int *arr_way, int l, int **arr_ways, int n, int num_3d, int ***res2) {
-    int amount_mun_3d_res = 0;
     int **res = (int **)malloc(n*sizeof(int *));
     for (int i = 0; i < n; i++) {
         res[i] = (int *)malloc(n*sizeof(int));
@@ -122,22 +41,22 @@ int **duplicate_way(int index_is, int index_is3, int **start_arr, int *arr_way, 
     return arr_ways;
 }
 
-int main() {
-    int n = 5;
-    is_list *islands = Create_island_list("A", 1);
+void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dist, int n, int amount_bridges) {
+    is_list *islands = Create_island_list(arr_islands1[0], 1);
     is_list *head_islands = islands;
-    Add_elem_end_island_list("B", 2, islands);
-    Add_elem_end_island_list("C", 3, islands);
-    Add_elem_end_island_list("D", 4, islands);
-    Add_elem_end_island_list("E", 5, islands);
-    
-    n_list *node_lists = Create_node_list("A", "B", 11);
+    for (int i = 1; i < n; i++) {
+        Add_elem_end_island_list(arr_islands1[i], i + 1, islands);
+    }
+
+    n_list *node_lists = Create_node_list(arr_islands_dist[0], arr_islands_dist[1], mx_atoi(arr_num_dist[0]));
     n_list *head_node = node_lists;
-    Add_elem_end_node_list("A", "C", 10, node_lists);
-    Add_elem_end_node_list("B", "D", 5, node_lists);
-    Add_elem_end_node_list("C", "D", 6, node_lists);
-    Add_elem_end_node_list("C", "E", 15, node_lists);
-    Add_elem_end_node_list("D", "E", 4, node_lists);
+    int uu = 1;
+    for (int i = 2; i < amount_bridges; i++) {
+        if ((i + 1) % 2 == 0) {
+            Add_elem_end_node_list(arr_islands_dist[i - 1], arr_islands_dist[i], mx_atoi(arr_num_dist[uu]), node_lists);
+            uu++;
+        }
+    }
     
     int **arr = (int **)malloc(n*sizeof(int *));
     for (int i = 0; i < n; i++) {
@@ -213,8 +132,8 @@ int main() {
             }
             islands = head_islands;
             while (node_lists != NULL) {
-                if (strcmp(buff1, node_lists->island1) == 0 || strcmp(buff1, node_lists->island2) == 0) {
-                    if (strcmp(buff2, node_lists->island1) == 0 || strcmp(buff2, node_lists->island2) == 0) {
+                if (mx_strcmp(buff1, node_lists->island1) == 0 || mx_strcmp(buff1, node_lists->island2) == 0) {
+                    if (mx_strcmp(buff2, node_lists->island1) == 0 || mx_strcmp(buff2, node_lists->island2) == 0) {
                         num = node_lists->distance;
                     }
                 }
@@ -257,22 +176,9 @@ int main() {
     for (int i = 0; i < num_3d; i++) {
         arr_duplicate[i] = 0;
     }
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (arr[i][j] >= 10) {
-                printf("%d ", arr[i][j]);
-            }
-            else {
-                printf("0%d ", arr[i][j]);
-            }
-            
-        }
-        printf("%s\n", "|");
-    }
-    printf("%s\n", "========================================");
     int g = 0;
-    int h = 0;
     int l = 0;
+    int h = 0;
     for (int k = 0; k < n; k++) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -281,29 +187,24 @@ int main() {
                 }
                 if(i != j && arr[i][k] != -1 && arr[k][j] != -1) {
                     if (arr[i][j] == -1) {
-                        h = arr[i][k] + arr[k][j];
-                        if (g > h) {
-                            g = arr[i][k] + arr[k][j];
-                            arr[i][j] = g;
-                            arr[j][i] = g;
-                            res[i][j] = k;
-                            res[j][i] = k;
-                            continue;
-                        }
-                        else {
-                            g = arr[i][k] + arr[k][j];
-                            continue;
-                        }
+                        g = arr[i][k] + arr[k][j];
+                        arr[i][j] = g;
+                        arr[j][i] = g;
+                        res[i][j] = k;
+                        res[j][i] = k;
+                        continue;
                     }
                     else {
-                        if (arr[i][j] > arr[i][k] + arr[k][j]) {
-                            arr[i][j] = arr[i][k] + arr[k][j];
-                            arr[j][i] = arr[i][k] + arr[k][j];
+                        g = arr[i][j];
+                        h = arr[i][k] + arr[k][j];
+                        if (g > h) {
+                            arr[i][j] = h;
+                            arr[j][i] = h;
                             res[i][j] = k;
                             res[j][i] = k;
                         }
                         else {
-                            if (arr[i][k] + arr[k][j] == arr[i][j]) {
+                            if (g == h) {
                                 res2[i][j][l] = k;
                                 res2[j][i][l] = k;
                                 l++;
@@ -315,33 +216,35 @@ int main() {
             }
         }
     }
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (arr[i][j] >= 10) {
-                printf("%d ", arr[i][j]);
+    for (int l = 0; l < num_3d; l++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    res2[i][j][l] = 0;
+                }
             }
-            else {
-                printf("%d ", arr[i][j]);
-            }
-            
         }
-        printf("%s\n", "|");
     }
-    printf("%s\n", "========================================");
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (arr[i][j] >= 10) {
-                printf("%d ", res[i][j]);
+    int ggg = 0;
+    int hhh = 0;
+    int xxx = 0;
+    int yyy = 0;
+    for (int l = 0; l < num_3d; l++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    continue;
+                }
+                xxx = res2[i][j][l];
+                yyy = arr[i][j];
+                ggg = arr[i][xxx];
+                hhh = arr[xxx][j];
+                if (ggg + hhh != yyy) {
+                    res2[i][j][l] = 0;
+                } 
             }
-            else {
-                printf("%d ", res[i][j]);
-            }
-            
         }
-        printf("%s\n", "|");
     }
-    printf("%s\n", "========================================");
-    printf("%s\n", "|");
     for (int l = 0; l < num_3d; l++) {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -350,15 +253,6 @@ int main() {
                 }
             }
         }
-    }
-    for (int l = 0; l < num_3d; l++) {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                printf("%d ", res2[i][j][l]);
-            }
-            printf("%s\n", "|");
-        }
-        printf("%s\n", "|");
     }
     char *buff_island;
     char *buff_island2;
@@ -390,7 +284,7 @@ int main() {
                     break;
                 }
                 else {
-                    if (strcmp(buff_island, node_lists->island1) == 0 && strcmp(buff_island2, node_lists->island2) == 0) {
+                    if (mx_strcmp(buff_island, node_lists->island1) == 0 && mx_strcmp(buff_island2, node_lists->island2) == 0) {
                         indicator = 1;
                         printf("%s\n", "========================================");
                         printf("Path: %s -> %s\n", buff_island, buff_island2);
@@ -471,14 +365,6 @@ int main() {
                     inum++;
                 }
                 printf("%s\n", "========================================");
-                for (int i = 0; i < n; i++) {
-                    printf("%d ", arr_way[i]);
-                }
-                printf("%s\n", "|");
-                for (int i = 0; i < num_3d; i++) {
-                    printf("%d ", arr_duplicate[i]);
-                }
-                printf("%s\n", "|");
                 printf("Path: %s -> %s\n", buff_island, buff_island2);
                 printf("Route: %s ->", buff_island);
                 int count = 0;
@@ -523,34 +409,38 @@ int main() {
                     }
                 }
                 printf("Distance%s", ":");
-                printf("%s\n", "|");
+                int zz = 0;
                 for (int i = 0; i < n; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        printf("%d ", arr_dist_way[i][j]);
+                    if (arr_way[i] > 0) {
+                        zz++;
                     }
-                    printf("%s\n", "|");
                 }
-                bufff = 0;
-                int bufff2 = 0;
-                int print_num_arr_dist_way = 0;
-                for (int i = 0; i <= count; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        if (j == 0) {
-                            bufff = arr_dist_way[i][j] - 1;
-                        }
-                        else {
-                            bufff2 = arr_dist_way[i][j] - 1;
-                        }
-                    }
-                    print_num_arr_dist_way = arr[bufff][bufff2];
-                    if (i == count) {
-                        printf(" %d ", print_num_arr_dist_way);
-                        break;
-                    }
-                    printf(" %d +", print_num_arr_dist_way);
+                if (zz == 0) {
+                    printf(" %d", arr[index_is - 1][index_is2 - 1]);
                 }
+                else {
+                    bufff = 0;
+                    int bufff2 = 0;
+                    int print_num_arr_dist_way = 0;
+                    for (int i = 0; i <= count; i++) {
+                        for (int j = 0; j < 2; j++) {
+                            if (j == 0) {
+                                bufff = arr_dist_way[i][j] - 1;
+                            }
+                            else {
+                                bufff2 = arr_dist_way[i][j] - 1;
+                            }
+                        }
+                        print_num_arr_dist_way = arr[bufff][bufff2];
+                        if (i == count) {
+                            printf(" %d ", print_num_arr_dist_way);
+                            break;
+                        }
+                        printf(" %d +", print_num_arr_dist_way);
+                    }
                 
-                printf("= %d", arr[index_is - 1][index_is2 - 1]);
+                    printf("= %d", arr[index_is - 1][index_is2 - 1]);
+                }
                 printf("\n%s\n", "========================================");
                 int i3 = 0;
                 int k_ind = 0;
@@ -573,13 +463,6 @@ int main() {
                         arr_duplicate[i] = 0;
                     }
                 }
-                printf("%s\n", "|");
-                for (int i = 0; i < num_3d; i++) {
-                    printf("%d ", arr_duplicate[i]);
-                }
-                printf("%s\n", "|");
-                printf("%d\n", step);
-                printf("%s\n", "|");
                 bool arr_dup = false;
                 for (int i = 0; i < num_3d; i++) {
                     if (arr_dup == true) {
@@ -589,10 +472,6 @@ int main() {
                         arr_dup = true;
                     } 
                 }
-                for (int j = 0; j < n; j++) {
-                    printf("%d |", arr_way[j]);
-                }
-                printf("%s\n", "|");
                 if (arr_dup) {
                     if (step == 2) {
                         for (int i = 0; i < num_3d; i++) {
@@ -606,14 +485,6 @@ int main() {
                             }
                             arr_way[0] = arr_duplicate[i];
                             printf("%s\n", "========================================");
-                            for (int i = 0; i < n; i++) {
-                                printf("%d ", arr_way[i]);
-                            }
-                            printf("%s\n", "|");
-                            for (int i = 0; i < num_3d; i++) {
-                                printf("%d ", arr_duplicate[i]);
-                            }
-                            printf("%s\n", "|");
                             printf("Path: %s -> %s\n", buff_island, buff_island2);
                             printf("Route: %s ->", buff_island);
                             int count = 0;
@@ -657,15 +528,7 @@ int main() {
                                     step++;
                                 }
                             }
-                
                             printf("Distance%s", ":");
-                            printf("%s\n", "|");
-                            for (int i = 0; i < n; i++) {
-                                for (int j = 0; j < 2; j++) {
-                                    printf("%d ", arr_dist_way[i][j]);
-                                }
-                                printf("%s\n", "|");
-                            }
                             bufff = 0;
                             int bufff2 = 0;
                             int print_num_arr_dist_way = 0;
@@ -698,14 +561,6 @@ int main() {
                             arr_way_3[i2] = 0;
                         }
                         ways = duplicate_way(index_is, index_is3, start_arr, arr_way_3, l, ways, n, num_3d, res2);
-                        int buff3 = 0;
-                        for (int i = 0; i < num_3d; i++) {
-                            for (int j = 0; j < n; j++) {
-                                printf("%d ", ways[i][j]);
-                            }
-                            printf("%s\n", "|");
-                        }
-                        printf("%s\n", "|");
                         for (int i = 0; i < num_3d; i++) {
                             int c = 0;
                             for (int j = 0; j < n/2; j++) {
@@ -756,13 +611,6 @@ int main() {
                             }
                         }
                         for (int i = 0; i < num_3d; i++) {
-                            for (int j = 0; j < n; j++) {
-                                printf("%d ", ways[i][j]);
-                            }
-                            printf("%s\n", "|");
-                        }
-                        printf("%s\n", "|");
-                        for (int i = 0; i < num_3d; i++) {
                             if (ways[i][0] == 0) {
                                 continue;
                             }
@@ -797,14 +645,6 @@ int main() {
                             }
 
                             printf("%s\n", "========================================");
-                            for (int i = 0; i < n; i++) {
-                                printf("%d ", arr_way[i]);
-                            }
-                            printf("%s\n", "|");
-                            for (int i = 0; i < num_3d; i++) {
-                                printf("%d ", arr_duplicate[i]);
-                            }
-                            printf("%s\n", "|");
                             printf("Path: %s -> %s\n", buff_island, buff_island2);
                             printf("Route: %s ->", buff_island);
                             int count = 0;
@@ -850,13 +690,6 @@ int main() {
                             }
                 
                             printf("Distance%s", ":");
-                            printf("%s\n", "|");
-                            for (int i = 0; i < n; i++) {
-                                for (int j = 0; j < 2; j++) {
-                                    printf("%d ", arr_dist_way[i][j]);
-                                }
-                                printf("%s\n", "|");
-                            }
                             bufff = 0;
                             int bufff2 = 0;
                             int print_num_arr_dist_way = 0;
@@ -881,10 +714,6 @@ int main() {
                             printf("\n%s\n", "========================================");
                         }
                     }
-                    printf("\n%s\n", "===");
-                }
-                else if (arr_dup && step == 2) {
-                    
                 }
             }
             else {
@@ -922,5 +751,6 @@ int main() {
     free(res2);
     Remove_all_island_list(islands);
     Remove_all_node_list(node_lists);
-    return 0;
+    exit(0);
 }
+

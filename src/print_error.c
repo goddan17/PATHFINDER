@@ -43,19 +43,39 @@ void print_error(int argc, char* argv[]) {
     fl = open(argv[1], O_RDONLY);
     int line_num = 1;
     int i = 0;
+    int i1 = 0;
+    int i2 = 0;
     while (size == read(fl, &buffer, 1)) {
         if (buffer == '\n') {
+            if (line_num > 1) {
+                if (i <= 0 || i1 <= 0 || i2 == 0) {
+                    mx_printerr("error: line ");
+                    mx_printerr(mx_itoa(line_num));
+                    mx_printerr(" is not valid\n");
+                    exit(0);
+                }
+            }
+            i2 = 0;
             i = 0;
+            i1 = 0;
             line_num++;
         }
-        if (buffer == '-') {
-            i++;
-        }
-        if (i == 2) {
-            mx_printerr("error: line ");
-            mx_printerr(mx_itoa(line_num));
-            mx_printerr(" is not valid\n");
-            exit(0);
+        if (line_num > 1) {
+            if (buffer == '-') {
+                i++;
+            }
+            if (buffer == ',') {
+                i1++;
+            }
+            if (i >= 2 || i1 >= 2) {
+                mx_printerr("error: line ");
+                mx_printerr(mx_itoa(line_num));
+                mx_printerr(" is not valid\n");
+                exit(0);
+            }
+            if (buffer != '\n') {
+                i2++;
+            }
         }
     }
     close(fl);
@@ -220,7 +240,7 @@ void print_error(int argc, char* argv[]) {
     int ind1 = 0;
     char *gg = mx_strnew(kk_size);
     char **arr2;
-    int sum_dist = 0;
+    long long int sum_dist = 0;
     while (size == read(fl, &buffer, 1)) {
         if (line_num == 0) {
             if (buffer == '\n') {
@@ -245,10 +265,10 @@ void print_error(int argc, char* argv[]) {
             }
         }
     }
-    //mx_printerr(gg);
+    ///mx_printerr(gg);
     arr2 = mx_strsplit(gg, ',');
     for (int i = 0; i < amount_dist; i++) {
-        sum_dist += mx_atoi(arr2[i]);
+        sum_dist = sum_dist + mx_atoi(arr2[i]);
     }
     if (sum_dist == 0 || sum_dist > 2147483647) {
         mx_printerr("error: sum of bridges lengths is too big\n");
