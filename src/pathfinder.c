@@ -286,11 +286,18 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                 else {
                     if (mx_strcmp(buff_island, node_lists->island1) == 0 && mx_strcmp(buff_island2, node_lists->island2) == 0) {
                         indicator = 1;
-                        printf("%s\n", "========================================");
-                        printf("Path: %s -> %s\n", buff_island, buff_island2);
-                        printf("Route: %s -> %s\n", buff_island, buff_island2);
-                        printf("Distance: %d\n", arr[index_is - 1][index_is2 - 1]);
-                        printf("%s\n", "========================================");
+                        mx_printstr("========================================\n");
+                        mx_printstr("Path: ");
+                        mx_printstr(buff_island);
+                        mx_printstr(" -> ");
+                        mx_printstr(buff_island2);
+                        mx_printstr("\nRoute: ");
+                        mx_printstr(buff_island);
+                        mx_printstr(" -> ");
+                        mx_printstr(buff_island2);
+                        mx_printstr("\nDistance: ");
+                        mx_printint(arr[index_is - 1][index_is2 - 1]);
+                        mx_printstr("\n========================================\n");
                         break;
                     }
                 }
@@ -364,9 +371,14 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                     arr_way[inum] = bufff;
                     inum++;
                 }
-                printf("%s\n", "========================================");
-                printf("Path: %s -> %s\n", buff_island, buff_island2);
-                printf("Route: %s ->", buff_island);
+                mx_printstr("========================================\n");
+                mx_printstr("Path: ");
+                mx_printstr(buff_island);
+                mx_printstr(" -> ");
+                mx_printstr(buff_island2);
+                mx_printstr("\nRoute: ");
+                mx_printstr(buff_island);
+                mx_printstr(" -> ");
                 int count = 0;
                 for (int i = 0; i < n; i++) {
                     if (arr_way[i] == 0) {
@@ -379,10 +391,12 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                         islands = islands->next;
                     }
                     islands = head_islands;
-                    printf(" %s ->", buff_island3); 
+                    mx_printstr(buff_island3);
+                    mx_printstr(" ->");
                     count++;
                 }
-                printf(" %s\n", buff_island2);
+                mx_printstr(buff_island2);
+                mx_printstr("\n");
                 int step = 0;
                 int t = 0;
                 for (int i = 0; i < count + 1; i++) {
@@ -408,7 +422,7 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                         step++;
                     }
                 }
-                printf("Distance%s", ":");
+                mx_printstr("Distance:");
                 int zz = 0;
                 for (int i = 0; i < n; i++) {
                     if (arr_way[i] > 0) {
@@ -416,7 +430,8 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                     }
                 }
                 if (zz == 0) {
-                    printf(" %d", arr[index_is - 1][index_is2 - 1]);
+                    mx_printstr(" ");
+                    mx_printint(arr[index_is - 1][index_is2 - 1]);
                 }
                 else {
                     bufff = 0;
@@ -433,15 +448,20 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                         }
                         print_num_arr_dist_way = arr[bufff][bufff2];
                         if (i == count) {
-                            printf(" %d ", print_num_arr_dist_way);
+                            mx_printstr(" ");
+                            mx_printint(print_num_arr_dist_way);
                             break;
                         }
-                        printf(" %d +", print_num_arr_dist_way);
+                        mx_printstr(" ");
+                        mx_printint(print_num_arr_dist_way);
+                        mx_printstr(" +");
                     }
-                
-                    printf("= %d", arr[index_is - 1][index_is2 - 1]);
+                    mx_printstr(" = ");
+                    mx_printint(arr[index_is - 1][index_is2 - 1]);
                 }
-                printf("\n%s\n", "========================================");
+                mx_printstr("\n");
+                mx_printstr("========================================");
+                mx_printstr("\n");
                 int i3 = 0;
                 int k_ind = 0;
                 for (int i = 0; i < num_3d; i++) {
@@ -484,9 +504,14 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                                 continue;
                             }
                             arr_way[0] = arr_duplicate[i];
-                            printf("%s\n", "========================================");
-                            printf("Path: %s -> %s\n", buff_island, buff_island2);
-                            printf("Route: %s ->", buff_island);
+                            mx_printstr("========================================\n");
+                            mx_printstr("Path: ");
+                            mx_printstr(buff_island);
+                            mx_printstr(" -> ");
+                            mx_printstr(buff_island2);
+                            mx_printstr("\nRoute: ");
+                            mx_printstr(buff_island);
+                            mx_printstr(" -> ");
                             int count = 0;
                             for (int i = 0; i < n; i++) {
                                 if (arr_way[i] == 0) {
@@ -499,10 +524,12 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                                     islands = islands->next;
                                 }
                                 islands = head_islands;
-                                printf(" %s ->", buff_island3); 
+                                mx_printstr(buff_island3);
+                                mx_printstr(" ->");
                                 count++;
                             }
-                            printf(" %s\n", buff_island2);
+                            mx_printstr(buff_island2);
+                            mx_printstr("\n");
                             int step = 0;
                             int t = 0;
                             for (int i = 0; i < count + 1; i++) {
@@ -528,7 +555,7 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                                     step++;
                                 }
                             }
-                            printf("Distance%s", ":");
+                            mx_printstr("Distance:");
                             bufff = 0;
                             int bufff2 = 0;
                             int print_num_arr_dist_way = 0;
@@ -543,14 +570,19 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                                 }
                                 print_num_arr_dist_way = arr[bufff][bufff2];
                                 if (i == count) {
-                                    printf(" %d ", print_num_arr_dist_way);
+                                    mx_printstr(" ");
+                                    mx_printint(print_num_arr_dist_way);
                                     break;
                                 }
-                                printf(" %d +", print_num_arr_dist_way);
+                                mx_printstr(" ");
+                                mx_printint(print_num_arr_dist_way);
+                                mx_printstr(" +");
                             }
-                
-                            printf("= %d", arr[index_is - 1][index_is2 - 1]);
-                            printf("\n%s\n", "========================================");
+                            mx_printstr(" = ");
+                            mx_printint(arr[index_is - 1][index_is2 - 1]);
+                            mx_printstr("\n");
+                            mx_printstr("========================================");
+                            mx_printstr("\n");
                         }
                     }
                     else {
@@ -644,9 +676,14 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                                 }
                             }
 
-                            printf("%s\n", "========================================");
-                            printf("Path: %s -> %s\n", buff_island, buff_island2);
-                            printf("Route: %s ->", buff_island);
+                            mx_printstr("========================================\n");
+                            mx_printstr("Path: ");
+                            mx_printstr(buff_island);
+                            mx_printstr(" -> ");
+                            mx_printstr(buff_island2);
+                            mx_printstr("\nRoute: ");
+                            mx_printstr(buff_island);
+                            mx_printstr(" -> ");
                             int count = 0;
                             for (int i = 0; i < n; i++) {
                                 if (arr_way[i] == 0) {
@@ -659,10 +696,12 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                                     islands = islands->next;
                                 }
                                 islands = head_islands;
-                                printf(" %s ->", buff_island3); 
+                                mx_printstr(buff_island3);
+                                mx_printstr(" ->");
                                 count++;
                             }
-                            printf(" %s\n", buff_island2);
+                            mx_printstr(buff_island2);
+                            mx_printstr("\n");
                             int step = 0;
                             int t = 0;
                             for (int i = 0; i < count + 1; i++) {
@@ -689,7 +728,7 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                                 }
                             }
                 
-                            printf("Distance%s", ":");
+                            mx_printstr("Distance:");
                             bufff = 0;
                             int bufff2 = 0;
                             int print_num_arr_dist_way = 0;
@@ -704,14 +743,20 @@ void pathfinder(char **arr_islands1, char **arr_islands_dist, char **arr_num_dis
                                 }
                                 print_num_arr_dist_way = arr[bufff][bufff2];
                                 if (i == count) {
-                                    printf(" %d ", print_num_arr_dist_way);
+                                    mx_printstr(" ");
+                                    mx_printint(print_num_arr_dist_way);
                                     break;
                                 }
-                                printf(" %d +", print_num_arr_dist_way);
+                                mx_printstr(" ");
+                                mx_printint(print_num_arr_dist_way);
+                                mx_printstr(" +");
                             }
                 
-                            printf("= %d", arr[index_is - 1][index_is2 - 1]);
-                            printf("\n%s\n", "========================================");
+                            mx_printstr(" = ");
+                            mx_printint(arr[index_is - 1][index_is2 - 1]);
+                            mx_printstr("\n");
+                            mx_printstr("========================================");
+                            mx_printstr("\n");
                         }
                     }
                 }
